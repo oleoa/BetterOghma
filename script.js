@@ -8,20 +8,94 @@
 // @description 07/06/2023, 11:03:25
 // ==/UserScript==
 
-// document.querySelector("body").style.backgroundColor = "black"
-function get(pattern)
+var defaultCallBack = function(element){}
+var hide = function(element)
 {
-  return document.querySelector(pattern);
+  element.style.display = "none";
+}
+var grid = function(element)
+{
+  element.style.display = "grid";
 }
 
-function getAll(pattern)
+function get(pattern, callback = defaultCallBack)
 {
-  return document.querySelectorAll(pattern);
+  let element = document.querySelector(pattern);
+
+  if(!element)
+    return;
+
+  callback(element);
 }
 
-function getByClass(className)
+function getAll(pattern, callback = defaultCallBack)
 {
-  return document.getElementsByClassName(className);
+  let element = document.querySelectorAll(pattern);
+
+  if(!element)
+    return;
+
+  for(var i = 0; i < element.length; i++)
+    callback(element[i]);
 }
 
-getByClass("events announcements")[0].style.display = "none";
+function getByClass(className, callback = defaultCallBack)
+{
+  let element = document.getElementsByClassName(className);
+
+  if(!element)
+    return;
+
+  for(var i = 0; i < element.length; i++)
+    callback(element[i]);
+}
+
+function getByText(text, callback = defaultCallBack)
+{
+  var elements = document.getElementsByTagName("*");
+
+  for (var i = 0; i < elements.length; i++)
+    if (elements[i].textContent === text)
+      callback(elements[i]);
+}
+
+var url = window.location.href;
+var page = url.split("/")[url.split("/").length-1];
+console.log(page);
+switch(page)
+{
+
+  // -------------------------------------------------- Avaliações --------------------------------------------------
+
+  case 'evaluations':
+
+    get("tbody", grid);
+    getAll("tr", grid);
+
+    getAll("tr", function(element){
+
+      let sons = element.querySelectorAll(element.className == "header" ? "th" : "td");
+        for(var i = 0; i < sons.length; i++)
+        {
+          sons[i].style.display = "flex";
+          if(i == 2){
+            sons[i].style.justifyContent = "end";
+            element.style.order = '-'+sons[i].textContent;
+            if(element.className == "header")
+              element.style.order = '-21';
+          }
+          if(i > 2)
+            hide(sons[i]);
+        }
+
+      element.style.gridTemplateColumns = "40% 40% 20%";
+
+    });
+
+    break;
+}
+
+// -------------------------------------------------- Alertas de Exames --------------------------------------------------
+getByText("Inscrições nos Exames", hide);
+getByClass("events announcements", hide);
+getByText("Importante!", hide);
