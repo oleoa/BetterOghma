@@ -152,7 +152,7 @@ switch(page)
         const doc = parser.parseFromString(await html.text(), 'text/html');
         avarage = getAvarage(doc);
 
-        element.style.order = "-"+avarage.toFixed(0);
+        element.style.order = (DECREASE?'-':'')+(avarage*1000).toFixed(0);
         avarages[id] = avarage;
         var averageElement = document.createElement("p");
         averageElement.textContent = "Média de "+avarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
@@ -161,6 +161,11 @@ switch(page)
       });
     });
 
-
     break;
 }
+
+// -------------------------------------------------- Alertas de Exames --------------------------------------------------
+
+getByText("Inscrições nos Exames", hide);
+getByClass("events announcements", hide);
+getByText("Importante!", hide);
