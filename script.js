@@ -140,25 +140,54 @@ switch(page)
       element.style.flexWrap = "wrap";
     });
 
-    let done = 0;
-    let avarages = {};
+    let avarageSum = 0;
+    let totalStudents = 0;
     getByClass("student active", async function(element){
-
       var id = element.querySelector("a").href.split("/")[4];
       var evaluationsURL = "https://oghma.epcc.pt/users/"+id+"/evaluations";
-      var avarage = 0;
-      await fetch(evaluationsURL).then(async html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(await html.text(), 'text/html');
-        avarage = getAvarage(doc);
+      if(id)
+        await fetch(evaluationsURL).then(async html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(await html.text(), 'text/html');
+          var avarage = getAvarage(doc);
+          avarageSum += avarage;
+          totalStudents++;
+          element.style.order = (DECREASE?'-':'')+(avarage*1000).toFixed(0);
+          var averageElement = document.createElement("p");
+          averageElement.textContent = "Média de "+avarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
+          element.appendChild(averageElement);
+        });
+      else
+      {
+        var totalAvarage = avarageSum/totalStudents;
+        element.querySelector("p").textContent = "Média de "+totalAvarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
+        element.style.order = (DECREASE?'-':'')+(totalAvarage*1000).toFixed(0);
+      }
+    });
 
-        element.style.order = (DECREASE?'-':'')+(avarage*1000).toFixed(0);
-        avarages[id] = avarage;
-        var averageElement = document.createElement("p");
-        averageElement.textContent = "Média de "+avarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
-        element.appendChild(averageElement);
-        done++;
-      });
+    getByClass("users-list photo", function(element){
+      var avarageStudent = document.createElement("li");
+      var imageA = document.createElement("a");
+      var image = document.createElement("img");
+      var br = document.createElement("br");
+      var span = document.createElement("span");
+      var a = document.createElement("a");
+      var p = document.createElement("p");
+
+      avarageStudent.className = "student active";
+      image.src = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+      image.style.height = "79px";
+      image.style.width = "auto";
+      span.textContent = "Média";
+      a.textContent = "Aluno Médio";
+
+      imageA.appendChild(image);
+      avarageStudent.appendChild(imageA);
+      avarageStudent.appendChild(span);
+      avarageStudent.appendChild(br);
+      avarageStudent.appendChild(a);
+      avarageStudent.appendChild(p);
+      element.appendChild(avarageStudent);
     });
 
     break;
