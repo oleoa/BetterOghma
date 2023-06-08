@@ -114,6 +114,8 @@ switch(page)
           {
             if(i > 1)
               sons[i].style.justifyContent = "end";
+            if(i == 2)
+              element.style.order = (DECREASE?'-':'')+sons[i].textContent;
             if(i > 3)
               hide(sons[i]);
           }
