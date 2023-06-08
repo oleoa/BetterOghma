@@ -96,22 +96,30 @@ switch(page)
     getAll("tr", grid);
 
     getAll("tr", function(element){
-
       let sons = element.querySelectorAll(element.className == "header" ? "th" : "td");
         for(var i = 0; i < sons.length; i++)
         {
           sons[i].style.display = "flex";
-          if(i == 2){
-            sons[i].style.justifyContent = "end";
-            element.style.order = (DECREASE?'-':'')+sons[i].textContent;
-            if(element.className == "header")
-              element.style.order = '-21';
+          if(element.className == "header")
+          {
+            element.style.order = '-21';
+            if(i == 0)
+              sons[i].style.gridColumn = "span 2 / span 2";
+            if(i > 0)
+              sons[i].style.justifyContent = "end";
+            if(i > 2)
+              hide(sons[i]);
           }
-          if(i > 2)
-            hide(sons[i]);
+          else
+          {
+            if(i > 1)
+              sons[i].style.justifyContent = "end";
+            if(i > 3)
+              hide(sons[i]);
+          }
         }
 
-      element.style.gridTemplateColumns = "40% 40% 20%";
+      element.style.gridTemplateColumns = "30% 50% 10% 10%";
 
     });
 
