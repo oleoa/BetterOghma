@@ -9,8 +9,10 @@
 // ==/UserScript==
 
 // -------------------------------------------------- Configurações --------------------------------------------------
-const AVARAGE_DECIMAL_PARTS = 2;
-const DECREASE = true;
+let AVARAGE_DECIMAL_PARTS = 2;
+let DECREASE = localStorage.getItem("DECREASE") ?? "true";
+if(!localStorage.getItem("DECREASE"))
+  localStorage.setItem("DECREASE", "true")
 
 var defaultCallBack = function(element){}
 var hide = function(element)
@@ -83,61 +85,10 @@ function getAvarage(page)
   return avarage;
 }
 
-var url = window.location.href;
-var page = url.split("/")[url.split("/").length-1];
-switch(page)
+let sites =
 {
-
-  // -------------------------------------------------- Avaliações --------------------------------------------------
-
-  case 'evaluations':
-
-    get("tbody", grid);
-    getAll("tr", grid);
-
-    getAll("tr", function(element){
-      let sons = element.querySelectorAll(element.className == "header" ? "th" : "td");
-        for(var i = 0; i < sons.length; i++)
-        {
-          sons[i].style.display = "flex";
-          if(element.className == "header")
-          {
-            element.style.order = '-21';
-            if(i == 0)
-              sons[i].style.gridColumn = "span 2 / span 2";
-            if(i > 0)
-              sons[i].style.justifyContent = "end";
-            if(i > 2)
-              hide(sons[i]);
-          }
-          else
-          {
-            if(i > 1)
-              sons[i].style.justifyContent = "end";
-            if(i == 2)
-              element.style.order = (DECREASE?'-':'')+sons[i].textContent;
-            if(i > 3)
-              hide(sons[i]);
-          }
-        }
-
-      element.style.gridTemplateColumns = "30% 50% 10% 10%";
-
-    });
-
-    getByClass("well clearfix", function(element){
-      var avarage = getAvarage(document);
-      var averageElement = document.createElement("p");
-      averageElement.textContent = "O aluno tem uma média de "+avarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
-      element.appendChild(averageElement);
-    });
-
-    break;
-
-  // -------------------------------------------------- Pessoas --------------------------------------------------
-
-  case 'subscriptions':
-
+  subscriptions: function()
+  {
     getByClass("student active", function(element){
       element.querySelectorAll("a").forEach(function(a){a.href+="/evaluations";})
     });
@@ -162,7 +113,7 @@ switch(page)
           var avarage = getAvarage(doc);
           avarageSum += avarage;
           totalStudents++;
-          element.style.order = (DECREASE?'-':'')+(avarage*1000).toFixed(0);
+          element.style.order = (DECREASE==="true"?'-':'')+(avarage*1000).toFixed(0);
           var averageElement = document.createElement("p");
           averageElement.textContent = "Média de "+avarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
           element.appendChild(averageElement);
@@ -171,7 +122,7 @@ switch(page)
       {
         var totalAvarage = avarageSum/totalStudents;
         element.querySelector("p").textContent = "Média de "+totalAvarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
-        element.style.order = (DECREASE?'-':'')+(totalAvarage*1000).toFixed(0);
+        element.style.order = (DECREASE==="true"?'-':'')+(totalAvarage*1000).toFixed(0);
       }
     });
 
@@ -199,8 +150,54 @@ switch(page)
       avarageStudent.appendChild(p);
       element.appendChild(avarageStudent);
     });
+  },
 
-    break;
+  evaluations: function()
+  {
+    get("tbody", grid);
+    getAll("tr", grid);
+
+    getAll("tr", function(element){
+      let sons = element.querySelectorAll(element.className == "header" ? "th" : "td");
+        for(var i = 0; i < sons.length; i++)
+        {
+          sons[i].style.display = "flex";
+          if(element.className == "header")
+          {
+            element.style.order = '-21';
+            if(i == 0)
+              sons[i].style.gridColumn = "span 2 / span 2";
+            if(i > 0)
+              sons[i].style.justifyContent = "end";
+            if(i > 2)
+              hide(sons[i]);
+          }
+          else
+          {
+            if(i > 1)
+              sons[i].style.justifyContent = "end";
+            if(i == 2)
+              element.style.order = (DECREASE==="true"?'-':'')+sons[i].textContent;
+            if(i > 3)
+              hide(sons[i]);
+          }
+        }
+
+      element.style.gridTemplateColumns = "30% 50% 10% 10%";
+
+    });
+
+    getByClass("well clearfix", function(element){
+      var avarage = getAvarage(document);
+      if(document.getElementById("alunoAvarageText"))
+        return;
+
+      var averageElement = document.createElement("p");
+      averageElement.id = "alunoAvarageText";
+      averageElement.innerHTML = "O aluno tem uma média de "+avarage.toFixed(AVARAGE_DECIMAL_PARTS)+" pontos";
+      element.appendChild(averageElement);
+    });
+  }
 }
 
 // -------------------------------------------------- Alertas de Exames --------------------------------------------------
@@ -208,3 +205,38 @@ switch(page)
 getByText("Inscrições nos Exames", hide);
 getByClass("events announcements", hide);
 getByText("Importante!", hide);
+
+// -------------------------------------------------- Main --------------------------------------------------
+
+var url = window.location.href;
+var page = url.split("/")[url.split("/").length-1];
+page = page.replace(/#/g, "");
+
+getByClass("nav pull-right", function(element){
+  element.style.display = "flex";
+  element.style.alignItems = "center";
+});
+
+getByClass("nav pull-right", function(element){
+  var li = document.createElement("li");
+  var checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  if(DECREASE === "true")
+    checkbox.checked = true;
+  checkbox.onclick = function(){
+    DECREASE = DECREASE === "true" ? "false" : "true";
+    localStorage.setItem('DECREASE', DECREASE === "true" ? "true" : "false");
+    sites[page]();
+  }
+  var text = document.createElement("span");
+  text.textContent = "Ordem decrescente";
+  text.style.padding = "1rem";
+
+  li.style.display = "flex";
+  li.appendChild(text);
+  li.appendChild(checkbox);
+  li.style.order = "-1";
+  element.appendChild(li);
+});
+
+sites[page]();
