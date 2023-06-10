@@ -252,7 +252,7 @@ getByClass("nav pull-right", function(element){
     sites[page]();
   }
   var text = document.createElement("span");
-  text.textContent = "Ordem descendente";
+  text.textContent = "Ordem decrescente";
   text.style.padding = "1rem";
 
   li.style.display = "flex";
