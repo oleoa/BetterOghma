@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "betteroghma",
+  "version": "2.0.0",
+  "description": "A userscript to improve https://oghma.epcc.pt",
+  "homepage": "https://github.com/AbreuDProgrammer/BetterOghma#readme",
+  "bugs": {
+    "url": "https://github.com/AbreuDProgrammer/BetterOghma/issues"
+  },
+  "license": "UNLICENSE",
+  "contributors": [
+    {
+      "name": "AbreuDProgrammer",
+      "url": "https://github.com/AbreuDProgrammer/"
+    },
+    {
+      "name": "João Augusto Torres",
+      "email": "torres.dev@disroot.org",
+      "url": "https://github.com/torres-developer/"
+    }
+  ],
+  "main": "./dist/index.user.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbreuDProgrammer/BetterOghma"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "dev": "rollup -wc rollup.conf.js",
+    "clean": "del-cli dist",
+    "build:js": "rollup -c rollup.conf.js",
+    "prebuild": "run-s ci clean",
+    "build": "cross-env NODE_ENV=production run-s build:js",
+    "ci": "run-s lint",
+    "lint": "eslint --ext .ts,.tsx .",
+    "lintfix": "eslint --ext .ts,.tsx . --fix",
+    "tsc": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.22.5",
+    "@violentmonkey/dom": "^2.1.4",
+    "@violentmonkey/ui": "^0.7.8"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.22.5",
+    "@gera2ld/plaid": "~2.5.9",
+    "@gera2ld/plaid-common-ts": "~2.5.9",
+    "@gera2ld/plaid-rollup": "~2.5.9",
+    "@tsconfig/esm": "^1.0.3",
+    "@tsconfig/recommended": "^1.0.2",
+    "@tsconfig/strictest": "^2.0.1",
+    "@types/react": "^18.2.11",
+    "@types/react-dom": "^18.2.4",
+    "@violentmonkey/types": "^0.1.5",
+    "del-cli": "^5.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.8",
+    "rollup-plugin-userscript": "^0.1.1",
+    "typescript": "^5.1.3"
+  }
+}

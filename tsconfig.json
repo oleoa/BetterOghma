@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": [
+      "@tsconfig/recommended/tsconfig.json",
+      "@tsconfig/esm/tsconfig.json",
+      "@tsconfig/strictest/tsconfig.json"
+  ],
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "declaration": false,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost",
+      "ESNext"
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "importHelpers": true,
+    "emitBOM": false,
+    "newLine": "lf",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true
+  },
+  "include": [
+    "src/**/*",
+    "node_modules/@violentmonkey/types"
+  ]
+}
