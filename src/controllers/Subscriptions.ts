@@ -82,4 +82,40 @@ export default class Subscriptions extends MainController
     avarage = sumAll / countAll;
     return avarage;
   }
+
+  protected load(): void
+  {
+    this.getByText("Inscrições nos Exames", this.hide);
+    this.getByClass("events announcements", this.hide);
+    this.getByText("Importante!", this.hide);
+
+    this.getByClass("nav pull-right", (element: HTMLElement) => {
+      element.style.display = "flex";
+      element.style.alignItems = "center";
+    });
+    
+    this.getByClass("nav pull-right", (element: HTMLElement) => {
+      var li = document.createElement("li");
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+
+      if(this.storage.check("DECREASE", "true"))
+        checkbox.checked = true;
+
+      checkbox.onclick = () => {
+        this.storage.set('DECREASE', this.storage.check("DECREASE", "true")?"false":"true");
+        this.index();
+      }
+
+      var text = document.createElement("span");
+      text.textContent = "Ordem decrescente";
+      text.style.padding = "1rem";
+    
+      li.style.display = "flex";
+      li.appendChild(text);
+      li.appendChild(checkbox);
+      li.style.order = "-1";
+      element.appendChild(li);
+    });
+  }
 }

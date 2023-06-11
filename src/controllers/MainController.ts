@@ -2,57 +2,21 @@ import LocalStorage from '../helpers/LocalStorage';
 
 type CallbackFunction = (element: Element) => void;
 
-export default class MainController
+export default abstract class MainController
 {
   protected readonly AVARAGE_DECIMAL_PARTS = 2;
 
   protected storage: LocalStorage
   protected url: string
-  protected page: string
 
-  constructor(url: string, page: string)
+  constructor(url: string)
   {
     this.url = url;
-    this.page = page;
     this.storage = new LocalStorage();
-
-    this.getByText("Inscrições nos Exames", this.hide);
-    this.getByClass("events announcements", this.hide);
-    this.getByText("Importante!", this.hide);
-    this.getByClass("nav pull-right", (element: HTMLElement) => {
-      element.style.display = "flex";
-      element.style.alignItems = "center";
-    });
-    
-    this.getByClass("nav pull-right", (element: HTMLElement) => {
-      var li = document.createElement("li");
-      var checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-
-      if(this.storage.check("DECREASE", "true"))
-        checkbox.checked = true;
-
-      checkbox.onclick = () => {
-        this.storage.set('DECREASE', this.storage.check("DECREASE", "true")?"false":"true");
-        location.reload();
-      }
-
-      var text = document.createElement("span");
-      text.textContent = "Ordem decrescente";
-      text.style.padding = "1rem";
-    
-      li.style.display = "flex";
-      li.appendChild(text);
-      li.appendChild(checkbox);
-      li.style.order = "-1";
-      element.appendChild(li);
-    });
+    this.load();
   }
 
-  async index()
-  {
-
-  }
+  protected abstract load(): void;
 
   protected hide = function(element: HTMLElement): void
   {
