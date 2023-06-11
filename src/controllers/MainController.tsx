@@ -84,27 +84,31 @@ export default abstract class MainController
     });
     
     this.getByClass("nav pull-right", (element: HTMLElement) => {
-      var li = document.createElement("li");
-      var checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
 
-      if(this.storage.check("DECREASE", "true"))
-        checkbox.checked = true;
+      if(document.querySelector("#decrease"))
+        return;
 
-      checkbox.onclick = () => {
-        this.storage.set('DECREASE', this.storage.check("DECREASE", "true")?"false":"true");
-        this.index();
-      }
+      const Checkbox = () => (
+        <input id="decrease" type="checkbox" checked={this.storage.check("DECREASE", "true")} onclick={ () => {
+          this.storage.set('DECREASE', this.storage.check("DECREASE", "true")?"false":"true");
+          this.index();
+        }}/>
+      );
 
-      var text = document.createElement("span");
-      text.textContent = "Ordem decrescente";
-      text.style.padding = "1rem";
+      const Text = () => (
+        <span style="padding: 1rem;">
+          Ordem decrescente
+        </span>
+      );
+
+      const Li = () => (
+        <li style="display: flex; order: -1">
+          <Text />
+          <Checkbox />
+        </li>
+      );
     
-      li.style.display = "flex";
-      li.appendChild(text);
-      li.appendChild(checkbox);
-      li.style.order = "-1";
-      element.appendChild(li);
+      element.append(VM.m(<Li />));
     });
   }
 }

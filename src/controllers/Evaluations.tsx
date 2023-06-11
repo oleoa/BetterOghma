@@ -23,8 +23,6 @@ export default class Evaluations extends MainController
     }
 
     // CSS
-    this.get("tbody", this.grid);
-    this.getAll("tr", this.grid);
     this.getAll("tr", (element: HTMLElement) => {
       let sons = element.querySelectorAll(element.className == "header" ? "th" : "td");
         for(var i = 0; i < sons.length; i++)
@@ -87,7 +85,7 @@ export default class Evaluations extends MainController
         this.storage.set(subject.getName()+"_id", subject.getId().toString());
         this.storage.set(subject.getName()+"_evaluation", subject.getEvaluation().toString());
         this.storage.set(subject.getName()+"_isActived", "true");
-      })
+      });
 
       this.storage.set("allSubjectsSet", "true");
       this.storage.set("subjectsLength", this.subjects.length.toString());
@@ -112,6 +110,7 @@ export default class Evaluations extends MainController
     }
     
     await this.getByClass("well clearfix", async element => {
+
       let avarageSubjectSum = 0;
       let subjectsCount = 0;
       this.subjects.forEach(subject => {
@@ -124,13 +123,13 @@ export default class Evaluations extends MainController
 
       var averageElement = null;
       if(document.getElementById("alunoAvarageText"))
-        averageElement = document.getElementById("alunoAvarageText");
+      averageElement = document.getElementById("alunoAvarageText");
       else
       {
         averageElement = document.createElement("p");
         averageElement.id = "alunoAvarageText";
       }
-
+      
       averageElement.innerHTML = "O aluno tem uma média de "+avarage+" pontos";
 
       if(!document.getElementById("alunoAvarageText"))
@@ -140,51 +139,56 @@ export default class Evaluations extends MainController
     this.getByClass("span2 sidebar", element => {
       if(document.getElementById("evaluationsCheckers"))
         return;
-      var div = document.createElement("div");
-      div.id = "evaluationsCheckers";
-      div.style.paddingLeft = "0.8rem";
-      div.style.paddingRight = "0.8rem";
 
-      element.appendChild(div);
+      const subjects = this.subjects.map(subject => {
+        
+        const SubjectElementCheckbox = () => (
+          <input
+          type="checkbox"
+          id={subject.getName()+"_checkbox"}
+          onclick={ () => {
+              this.storage.set(subject.getName()+"_isActived", this.storage.check(subject.getName()+"_isActived", "true")?"false":"true");
+              this.index();
+            }
+          }
+          checked={this.storage.check(subject.getName()+"_isActived", "true")} />
+        );
 
-      this.subjects.forEach(subject => {
+        const SubjectElementText = () => (
+          <label 
+          for={subject.getName()+"_checkbox"}
+          style="
+          font-size: 0.8rem;
+          margin-bottom: 0rem;
+          user-select: none;
+          padding-left: 0.5rem;
+          fontSize: 0.8rem;" >
+          {subject.getName() == "Tecnologias de Informação e Comunicação" ? "TIC" : subject.getName()}
+          </label>
+        );
 
-        var subjectElementDiv = document.createElement("div");
-        subjectElementDiv.style.display = "flex";
-        subjectElementDiv.style.flexDirection = "row";
-        subjectElementDiv.style.alignItems = "center";
-        subjectElementDiv.style.justifyContent = "start";
-        subjectElementDiv.style.padding = "0.25rem";
+        const SubjectAvarageScore = () => (
+          <span style="padding-left: 0.5rem;">
+            {subject.getEvaluation().toString()}
+          </span>
+        );
 
-        var subjectElementCheckbox = document.createElement("input");
-        subjectElementCheckbox.type = "checkbox";
-        subjectElementCheckbox.id = subject.getName()+"_checkbox";
-
-        if(this.storage.check(subject.getName()+"_isActived", "true"))
-          subjectElementCheckbox.checked = true;
-
-        subjectElementCheckbox.onclick = () => {
-          this.storage.set(subject.getName()+"_isActived", this.storage.check(subject.getName()+"_isActived", "true")?"false":"true");
-          this.index();
-        }
-
-        var subjectElementText = document.createElement("label");
-        subjectElementText.style.fontSize = "0.8rem";
-        subjectElementText.style.marginBottom = "0rem";
-        subjectElementText.style.userSelect = "none";
-        subjectElementText.htmlFor = subject.getName()+"_checkbox";
-        subjectElementText.innerHTML = subject.getName() == "Tecnologias de Informação e Comunicação" ? "TIC" : subject.getName();
-        subjectElementText.style.paddingLeft = "0.5rem";
-
-        var subjectAvarageScore = document.createElement("span");
-        subjectAvarageScore.innerHTML = subject.getEvaluation().toString();
-        subjectAvarageScore.style.paddingLeft = "0.5rem";
-
-        subjectElementDiv.appendChild(subjectElementCheckbox);
-        subjectElementDiv.appendChild(subjectElementText);
-        subjectElementDiv.appendChild(subjectAvarageScore);
-        div.appendChild(subjectElementDiv);
+        return (
+          <div style="display: flex; flex-direction: row; align-items: center; justify-content: start; padding: 0.25rem;">
+            <SubjectElementCheckbox />
+            <SubjectElementText />
+            <SubjectAvarageScore />
+          </div>
+        );
       });
+
+      const Div = () => (
+        <div id="evaluationsCheckers" style="padding-left: 0.8rem; padding-right: 0.8rem;">
+          {subjects}
+        </div>
+      );
+
+      element.append(VM.m(<Div />));
 
     });
   }
@@ -238,41 +242,5 @@ export default class Evaluations extends MainController
     });
 
     return evaluation;
-  }
-
-  protected load(): void
-  {
-    this.getByText("Inscrições nos Exames", this.hide);
-    this.getByClass("events announcements", this.hide);
-    this.getByText("Importante!", this.hide);
-
-    this.getByClass("nav pull-right", (element: HTMLElement) => {
-      element.style.display = "flex";
-      element.style.alignItems = "center";
-    });
-    
-    this.getByClass("nav pull-right", (element: HTMLElement) => {
-      var li = document.createElement("li");
-      var checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-
-      if(this.storage.check("DECREASE", "true"))
-        checkbox.checked = true;
-
-      checkbox.onclick = () => {
-        this.storage.set('DECREASE', this.storage.check("DECREASE", "true")?"false":"true");
-        this.index();
-      }
-
-      var text = document.createElement("span");
-      text.textContent = "Ordem decrescente";
-      text.style.padding = "1rem";
-    
-      li.style.display = "flex";
-      li.appendChild(text);
-      li.appendChild(checkbox);
-      li.style.order = "-1";
-      element.appendChild(li);
-    });
   }
 }
