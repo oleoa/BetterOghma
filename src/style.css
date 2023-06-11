@@ -4,6 +4,65 @@ body {
   @apply bg-gray-800;
 }
 
+div.well {
+  @apply bg-gray-700;
+}
+
+div.container {
+  @apply bg-gray-700;
+  @apply mx-0;
+  @apply px-4;
+}
+
+header.main div.navbar-inner {
+  @apply border-b-0;
+  @apply px-0;
+}
+
+html {
+  @apply py-4;
+  @apply px-4;
+}
+
+div.sidebar {
+  @apply bg-gray-700;
+}
+
+a {
+  @apply text-white;
+}
+
+header div.navbar-inner ul.nav a {
+  @apply text-white;
+}
+
+.icon-search {
+  @apply bg-white;
+  @apply rounded;
+}
+
+span {
+  @apply text-white;
+}
+
+label {
+  @apply text-white;
+}
+
+p {
+  @apply text-white;
+}
+
+.table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th {
+  @apply bg-gray-300;
+  @apply text-white;
+}
+
+tr {
+  @apply bg-gray-300;
+  @apply text-white;
+}
+
 /* Put tailwind utility classes in the end */
 /* only uncomment it if you are using CSS in shadow DOM, otherwise the page styles may be affected.
 @tailwind utilities;
