@@ -13,11 +13,4 @@ export default class Default extends MainController
       element.append(VM.m(<App />));
     });
   }
-
-  protected load(): void 
-  {
-    this.getByText("Inscrições nos Exames", this.hide);
-    this.getByClass("events announcements", this.hide);
-    this.getByText("Importante!", this.hide);
-  }
 }

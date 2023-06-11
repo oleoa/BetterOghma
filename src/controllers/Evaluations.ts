@@ -7,6 +7,7 @@ export default class Evaluations extends MainController
 
   async index()
   {
+    this.setDecrescent();
     this.subjects = [];
 
     // Verifica em qual user está salvo a atual data

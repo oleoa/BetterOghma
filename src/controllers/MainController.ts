@@ -13,10 +13,12 @@ export default abstract class MainController
   {
     this.url = url;
     this.storage = new LocalStorage();
-    this.load();
+    this.getByText("Inscrições nos Exames", this.hide);
+    this.getByClass("events announcements", this.hide);
+    this.getByText("Importante!", this.hide);
   }
 
-  protected abstract load(): void;
+  protected abstract index(): void;
 
   protected hide = function(element: HTMLElement): void
   {
@@ -72,5 +74,37 @@ export default abstract class MainController
     for (var i = 0; i < elements.length; i++)
       if (elements[i].textContent === text)
         callback(elements[i]);
+  }
+
+  protected setDecrescent(): void
+  {
+    this.getByClass("nav pull-right", (element: HTMLElement) => {
+      element.style.display = "flex";
+      element.style.alignItems = "center";
+    });
+    
+    this.getByClass("nav pull-right", (element: HTMLElement) => {
+      var li = document.createElement("li");
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+
+      if(this.storage.check("DECREASE", "true"))
+        checkbox.checked = true;
+
+      checkbox.onclick = () => {
+        this.storage.set('DECREASE', this.storage.check("DECREASE", "true")?"false":"true");
+        this.index();
+      }
+
+      var text = document.createElement("span");
+      text.textContent = "Ordem decrescente";
+      text.style.padding = "1rem";
+    
+      li.style.display = "flex";
+      li.appendChild(text);
+      li.appendChild(checkbox);
+      li.style.order = "-1";
+      element.appendChild(li);
+    });
   }
 }
