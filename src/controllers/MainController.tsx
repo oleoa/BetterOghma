@@ -64,7 +64,7 @@ export default abstract class MainController
       return;
 
     for(var i = 0; i < element.length; i++)
-      callback(element[i]);
+      await callback(element[i]);
   }
 
   protected async getByText(text: string, callback: CallbackFunction)

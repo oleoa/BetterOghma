@@ -23,6 +23,8 @@ export default class Evaluations extends MainController
     }
 
     // CSS
+    this.get("tbody", this.grid);
+    this.getAll("tr", this.grid);
     this.getAll("tr", (element: HTMLElement) => {
       let sons = element.querySelectorAll(element.className == "header" ? "th" : "td");
         for(var i = 0; i < sons.length; i++)
@@ -156,13 +158,13 @@ export default class Evaluations extends MainController
 
         const SubjectElementText = () => (
           <label 
-          for={subject.getName()+"_checkbox"}
-          style="
-          font-size: 0.8rem;
-          margin-bottom: 0rem;
-          user-select: none;
-          padding-left: 0.5rem;
-          fontSize: 0.8rem;" >
+            for={subject.getName()+"_checkbox"}
+            style="
+            font-size: 0.8rem;
+            margin-bottom: 0rem;
+            user-select: none;
+            padding-left: 0.5rem;
+            fontSize: 0.8rem;" >
           {subject.getName() == "Tecnologias de Informação e Comunicação" ? "TIC" : subject.getName()}
           </label>
         );

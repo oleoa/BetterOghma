@@ -2,6 +2,8 @@ import MainController from "./MainController";
 
 export default class Subscriptions extends MainController
 {
+  private totalAvarage: number;
+
   async index()
   {
     this.setDecrescent();
@@ -20,6 +22,7 @@ export default class Subscriptions extends MainController
 
     let avarageSum = 0;
     let totalStudents = 0;
+
     this.getByClass("student active", async (element: HTMLElement) => {
       var id = element.querySelector("a").href.split("/")[4];
       var evaluationsURL = "https://oghma.epcc.pt/users/"+id+"/evaluations";
@@ -37,13 +40,13 @@ export default class Subscriptions extends MainController
         });
       else
       {
-        var totalAvarage = avarageSum/totalStudents;
-        element.querySelector("p").textContent = "Média de "+totalAvarage.toFixed(this.AVARAGE_DECIMAL_PARTS)+" pontos";
-        element.style.order = (this.storage.check("DECREASE", "true")?'-':'')+(totalAvarage*1000).toFixed(0);
+        this.totalAvarage = avarageSum/totalStudents;
+        element.querySelector("p").textContent = "Média de "+this.totalAvarage.toFixed(this.AVARAGE_DECIMAL_PARTS)+" pontos";
+        element.style.order = (this.storage.check("DECREASE", "true")?'-':'')+(this.totalAvarage*1000).toFixed(0);
       }
     });
 
-    this.getByClass("users-list photo", function(element){
+    this.getByClass("users-list photo", (element: HTMLElement) => {
       var avarageStudent = document.createElement("li");
       var imageA = document.createElement("a");
       var image = document.createElement("img");

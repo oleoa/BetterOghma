@@ -1,13 +1,5 @@
 /* global css */
 
-tbody {
-  @apply grid;
-}
-
-tr {
-  @apply grid;
-}
-
 /* Put tailwind utility classes in the end */
 /* only uncomment it if you are using CSS in shadow DOM, otherwise the page styles may be affected.
 @tailwind utilities;
