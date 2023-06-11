@@ -1,7 +1,7 @@
 import './app';
-import Evaluations from './Evaluations';
-import MainController from './MainController';
-import Subscriptions from './Subscriptions';
+import Evaluations from './controllers/Evaluations';
+import MainController from './controllers/MainController';
+import Subscriptions from './controllers/Subscriptions';
 
 // setItem("DECREASE", getItem("DECREASE", "true"));
 
